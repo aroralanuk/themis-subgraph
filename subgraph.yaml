@@ -1,0 +1,62 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: ThemisAuction
+    network: goerli
+    source:
+      address: "0x8021D25D143255b9daCBDF7Ab6c1c47460e6f0Ad"
+      abi: ThemisAuction
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - ApprovalForAll
+        - AuctionEnded
+        - AuctionInitialized
+        - BidFailed
+        - BidProvenRemote
+        - BidRevealed
+        - BidShortlisted
+        - BidSuccessfullyPlaced
+        - ReceivedToken
+        - Reserved
+        - RevealStarted
+        - Transfer
+        - VaultDeployed
+      abis:
+        - name: ThemisAuction
+          file: ./abis/ThemisAuction.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: AuctionEnded()
+          handler: handleAuctionEnded
+        - event: AuctionInitialized(indexed address,indexed address,uint64,uint64,uint128)
+          handler: handleAuctionInitialized
+        - event: BidFailed(uint256,indexed address,address,uint128)
+          handler: handleBidFailed
+        - event: BidProvenRemote(uint256,indexed bytes32,indexed address,uint256)
+          handler: handleBidProvenRemote
+        - event: BidRevealed(indexed uint32,indexed bytes32,uint128)
+          handler: handleBidRevealed
+        - event: BidShortlisted(indexed uint32,indexed uint32,indexed address,uint128)
+          handler: handleBidShortlisted
+        - event: BidSuccessfullyPlaced(uint256,indexed address,address,uint128)
+          handler: handleBidSuccessfullyPlaced
+        - event: ReceivedToken(uint32,bytes32,string,address,uint256)
+          handler: handleReceivedToken
+        - event: Reserved(indexed address,indexed uint256)
+          handler: handleReserved
+        - event: RevealStarted()
+          handler: handleRevealStarted
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+        - event: VaultDeployed(indexed bytes32,indexed address,indexed address)
+          handler: handleVaultDeployed
+      file: ./src/themis-auction.ts
