@@ -4,3 +4,54 @@ type ExampleEntity @entity {
   owner: Bytes! # address
   spender: Bytes! # address
 }
+
+type Project @entity {
+  "Contract address"
+  id : ID!
+
+  "determine if user can bid or reveal or not"
+  mintActive: Boolean!
+
+  "owner"
+  owner: Bytes!
+
+  "when the auction starts"
+  auctionStart: BigInt
+
+  bidDeadline: BigInt
+
+  revealDeadline: BigInt
+
+  "highestBids"
+  highestBids: [Bid!]! @derivedFrom(field: "project")
+
+  "reservePrice"
+  reservePrice: BigInt!
+
+  "totalSupply"
+  totalSupply: BigInt!
+
+  "name"
+  name: String!
+
+  "symbol"
+  symbol: String!
+
+  "router"
+  router: Bytes
+
+}
+
+
+type Bid @entity {
+  id: ID!
+  project: Project!
+
+  domain: BigInt!
+  bidderAddress: Bytes!
+  bidAmount: BigInt!
+  bidTimestamp:  BigInt!
+
+  position: BigInt!
+}
+

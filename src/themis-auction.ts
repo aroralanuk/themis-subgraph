@@ -16,7 +16,7 @@ import {
   Transfer,
   VaultDeployed
 } from "../generated/ThemisAuction/ThemisAuction"
-import { ExampleEntity } from "../generated/schema"
+import { Project, ExampleEntity } from "../generated/schema"
 
 export function handleApproval(event: Approval): void {
   // Entities can be loaded from the store using a string ID; this ID
@@ -86,7 +86,26 @@ export function handleApprovalForAll(event: ApprovalForAll): void {}
 
 export function handleAuctionEnded(event: AuctionEnded): void {}
 
-export function handleAuctionInitialized(event: AuctionInitialized): void {}
+export function handleAuctionInitialized(event: AuctionInitialized): void {
+  let project = new Project(event.params.auction.toHexString());
+  let contract = ThemisAuction.bind(event.address);
+
+  if (project != null) {
+    project.id = event.params.auction.toHexString();
+
+    project.name = contract.name();
+    project.symbol = contract.symbol();
+    project.owner = contract.collectionOwner();
+    project.totalSupply = contract.MAX_SUPPLY();
+  }
+  project.mintActive = true;
+  project.auctionStart = event.params.auctionStart;
+  project.bidDeadline = event.params.BidDeadline;
+  project.revealDeadline = event.params.RevealDeadline;
+  project.reservePrice = event.params.reservePrice;
+
+  project.save();
+}
 
 export function handleBidFailed(event: BidFailed): void {}
 
