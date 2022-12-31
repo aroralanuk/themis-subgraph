@@ -49,8 +49,8 @@ type Bid @entity {
 
   domain: BigInt!
   bidderAddress: Bytes!
-  bidAmount: BigInt!
-  bidTimestamp:  BigInt!
+  amount: BigInt!
+  timestamp:  BigInt!
 
   position: BigInt!
 }

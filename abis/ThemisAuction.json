@@ -3,17 +3,17 @@
     "inputs": [
       {
         "internalType": "string",
-        "name": "name",
+        "name": "name_",
         "type": "string"
       },
       {
         "internalType": "string",
-        "name": "symbol",
+        "name": "symbol_",
         "type": "string"
       },
       {
         "internalType": "uint256",
-        "name": "_maxSupply",
+        "name": "maxSupply_",
         "type": "uint256"
       }
     ],
@@ -57,7 +57,22 @@
   },
   {
     "inputs": [],
+    "name": "InsertLimitsInUse",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InsertLimitsNotSet",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "InvalidTokenId",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NoBids",
     "type": "error"
   },
   {
@@ -267,15 +282,27 @@
       },
       {
         "indexed": true,
-        "internalType": "bytes32",
-        "name": "bidder",
-        "type": "bytes32"
+        "internalType": "uint32",
+        "name": "domain",
+        "type": "uint32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "bidderAddress",
+        "type": "address"
       },
       {
         "indexed": false,
         "internalType": "uint128",
-        "name": "bidAmount",
+        "name": "amount",
         "type": "uint128"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "timestamp",
+        "type": "uint64"
       }
     ],
     "name": "BidRevealed",
@@ -635,6 +662,13 @@
   },
   {
     "inputs": [],
+    "name": "endBidPeriod",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "endOfBiddingPeriod",
     "outputs": [
       {
@@ -657,6 +691,13 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "endRevealPeriod",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -722,9 +763,19 @@
             "internalType": "uint64",
             "name": "bidTimestamp",
             "type": "uint64"
+          },
+          {
+            "internalType": "uint32",
+            "name": "prevKey",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "nextKey",
+            "type": "uint32"
           }
         ],
-        "internalType": "struct Bids.Node[]",
+        "internalType": "struct Bids.Element[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -771,7 +822,22 @@
     "outputs": [
       {
         "internalType": "uint32",
+        "name": "head",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "tail",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
         "name": "totalBids",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "capacity",
         "type": "uint32"
       }
     ],
@@ -994,8 +1060,26 @@
   {
     "inputs": [
       {
+        "internalType": "uint32",
+        "name": "lesserkey_",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "greaterKey_",
+        "type": "uint32"
+      }
+    ],
+    "name": "setInsertLimits",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
-        "name": "_router",
+        "name": "router_",
         "type": "address"
       }
     ],

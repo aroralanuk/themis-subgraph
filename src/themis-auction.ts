@@ -16,7 +16,7 @@ import {
   Transfer,
   VaultDeployed
 } from "../generated/ThemisAuction/ThemisAuction"
-import { Project, ExampleEntity } from "../generated/schema"
+import { Project, Bid, ExampleEntity } from "../generated/schema"
 
 export function handleApproval(event: Approval): void {
   // Entities can be loaded from the store using a string ID; this ID
@@ -87,7 +87,7 @@ export function handleApprovalForAll(event: ApprovalForAll): void {}
 export function handleAuctionEnded(event: AuctionEnded): void {}
 
 export function handleAuctionInitialized(event: AuctionInitialized): void {
-  let project = new Project(event.params.auction.toHexString());
+  let project = new Project(event.address.toHexString());
   let contract = ThemisAuction.bind(event.address);
 
   if (project != null) {
@@ -111,7 +111,27 @@ export function handleBidFailed(event: BidFailed): void {}
 
 export function handleBidProvenRemote(event: BidProvenRemote): void {}
 
-export function handleBidRevealed(event: BidRevealed): void {}
+export function handleBidRevealed(event: BidRevealed): void {
+  let project = Project.load(event.address.toHexString());
+  let bid = new Bid(event.params.currentPosition.toString());
+
+  if (project) {
+    // fixme: actually not currentPosition
+    bid.id = event.params.currentPosition.toString();
+    bid.project = project.id;
+
+    bid.bidderAddress = event.params.bidderAddress;
+    bid.amount = event.params.amount;
+    bid.domain = event.params.domain;
+    bid.timestamp = event.params.timestamp;
+
+    bid.save();
+  }
+
+
+
+
+}
 
 export function handleBidShortlisted(event: BidShortlisted): void {}
 

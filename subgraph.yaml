@@ -6,7 +6,7 @@ dataSources:
     name: ThemisAuction
     network: goerli
     source:
-      address: "0xd6F9C6D5eFFDDE6F347292FCED0B181e1785C17c"
+      address: "0x53f04DA5b767Ef535B8E84413C4F4316dFEa1524"
       abi: ThemisAuction
       startBlock: 8212000
     mapping:
@@ -44,7 +44,7 @@ dataSources:
           handler: handleBidFailed
         - event: BidProvenRemote(uint256,indexed bytes32,indexed address,uint256)
           handler: handleBidProvenRemote
-        - event: BidRevealed(indexed uint32,indexed bytes32,uint128)
+        - event: BidRevealed(indexed uint32,indexed uint32,indexed address,uint128,uint64)
           handler: handleBidRevealed
         - event: BidShortlisted(indexed uint32,indexed uint32,indexed address,uint128)
           handler: handleBidShortlisted

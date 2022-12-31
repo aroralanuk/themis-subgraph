@@ -291,22 +291,22 @@ export class Bid extends Entity {
     this.set("bidderAddress", Value.fromBytes(value));
   }
 
-  get bidAmount(): BigInt {
-    let value = this.get("bidAmount");
+  get amount(): BigInt {
+    let value = this.get("amount");
     return value!.toBigInt();
   }
 
-  set bidAmount(value: BigInt) {
-    this.set("bidAmount", Value.fromBigInt(value));
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
   }
 
-  get bidTimestamp(): BigInt {
-    let value = this.get("bidTimestamp");
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
     return value!.toBigInt();
   }
 
-  set bidTimestamp(value: BigInt) {
-    this.set("bidTimestamp", Value.fromBigInt(value));
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
   }
 
   get position(): BigInt {
