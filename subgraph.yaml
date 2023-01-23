@@ -6,7 +6,7 @@ dataSources:
     name: ThemisAuction
     network: goerli
     source:
-      address: "0x53f04DA5b767Ef535B8E84413C4F4316dFEa1524"
+      address: "0xF54ddD35f3aDF7D2bAbaB6251d4481a4ACbA5535"
       abi: ThemisAuction
       startBlock: 8212000
     mapping:
@@ -24,6 +24,9 @@ dataSources:
         - BidShortlisted
         - BidSuccessfullyPlaced
         - ReceivedToken
+        - RevealStarted
+        - RevealStartedController
+        - RevealEnded
         - Reserved
         - RevealStarted
         - Transfer
@@ -36,7 +39,7 @@ dataSources:
           handler: handleApproval
         - event: ApprovalForAll(indexed address,indexed address,bool)
           handler: handleApprovalForAll
-        - event: AuctionEnded()
+        - event: AuctionEnded(uint256)
           handler: handleAuctionEnded
         - event: AuctionInitialized(indexed address,indexed address,uint64,uint64,uint64,uint128)
           handler: handleAuctionInitialized
@@ -52,10 +55,14 @@ dataSources:
           handler: handleBidSuccessfullyPlaced
         - event: ReceivedToken(uint32,bytes32,string,address,uint256)
           handler: handleReceivedToken
+        - event: RevealStarted(uint256)
+          handler: handleRevealStarted
+        - event: RevealStartedController(uint256)
+          handler: handleRevealStartedController
+        - event: RevealEnded(uint256)
+          handler: handleRevealEnded
         - event: Reserved(indexed address,indexed uint256)
           handler: handleReserved
-        - event: RevealStarted()
-          handler: handleRevealStarted
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
         - event: VaultDeployed(indexed bytes32,indexed address,indexed address)

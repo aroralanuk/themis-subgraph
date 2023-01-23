@@ -123,14 +123,10 @@ export function handleBidRevealed(event: BidRevealed): void {
     bid.bidderAddress = event.params.bidderAddress;
     bid.amount = event.params.amount;
     bid.domain = event.params.domain;
-    bid.timestamp = event.params.timestamp;
+    bid.createdAt = event.params.timestamp;
 
     bid.save();
   }
-
-
-
-
 }
 
 export function handleBidShortlisted(event: BidShortlisted): void {}
@@ -143,7 +139,13 @@ export function handleReceivedToken(event: ReceivedToken): void {}
 
 export function handleReserved(event: Reserved): void {}
 
-export function handleRevealStarted(event: RevealStarted): void {}
+export function handleRevealStarted(event: RevealStarted): void {
+  let project = Project.load(event.address.toHexString());
+  if (project) {
+    project.bidDeadline = event.params.timestamp;
+    project.save();
+  }
+}
 
 export function handleTransfer(event: Transfer): void {}
 

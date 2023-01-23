@@ -74,6 +74,10 @@ export class AuctionEnded__Params {
   constructor(event: AuctionEnded) {
     this._event = event;
   }
+
+  get timestamp(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
 }
 
 export class AuctionInitialized extends ethereum.Event {
@@ -324,6 +328,24 @@ export class Reserved__Params {
   }
 }
 
+export class RevealEnded extends ethereum.Event {
+  get params(): RevealEnded__Params {
+    return new RevealEnded__Params(this);
+  }
+}
+
+export class RevealEnded__Params {
+  _event: RevealEnded;
+
+  constructor(event: RevealEnded) {
+    this._event = event;
+  }
+
+  get timestamp(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+}
+
 export class RevealStarted extends ethereum.Event {
   get params(): RevealStarted__Params {
     return new RevealStarted__Params(this);
@@ -335,6 +357,28 @@ export class RevealStarted__Params {
 
   constructor(event: RevealStarted) {
     this._event = event;
+  }
+
+  get timestamp(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+}
+
+export class RevealStartedController extends ethereum.Event {
+  get params(): RevealStartedController__Params {
+    return new RevealStartedController__Params(this);
+  }
+}
+
+export class RevealStartedController__Params {
+  _event: RevealStartedController;
+
+  constructor(event: RevealStartedController) {
+    this._event = event;
+  }
+
+  get timestamp(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
   }
 }
 
@@ -390,45 +434,6 @@ export class VaultDeployed__Params {
   }
 }
 
-export class ThemisAuction__checkBidResult {
-  value0: boolean;
-  value1: Bytes;
-  value2: BigInt;
-  value3: Bytes;
-
-  constructor(value0: boolean, value1: Bytes, value2: BigInt, value3: Bytes) {
-    this.value0 = value0;
-    this.value1 = value1;
-    this.value2 = value2;
-    this.value3 = value3;
-  }
-
-  toMap(): TypedMap<string, ethereum.Value> {
-    let map = new TypedMap<string, ethereum.Value>();
-    map.set("value0", ethereum.Value.fromBoolean(this.value0));
-    map.set("value1", ethereum.Value.fromFixedBytes(this.value1));
-    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
-    map.set("value3", ethereum.Value.fromFixedBytes(this.value3));
-    return map;
-  }
-
-  getValue0(): boolean {
-    return this.value0;
-  }
-
-  getValue1(): Bytes {
-    return this.value1;
-  }
-
-  getValue2(): BigInt {
-    return this.value2;
-  }
-
-  getValue3(): Bytes {
-    return this.value3;
-  }
-}
-
 export class ThemisAuction__getHighestBidsResultValue0Struct extends ethereum.Tuple {
   get domain(): BigInt {
     return this[0].toBigInt();
@@ -444,53 +449,6 @@ export class ThemisAuction__getHighestBidsResultValue0Struct extends ethereum.Tu
 
   get bidTimestamp(): BigInt {
     return this[3].toBigInt();
-  }
-
-  get prevKey(): BigInt {
-    return this[4].toBigInt();
-  }
-
-  get nextKey(): BigInt {
-    return this[5].toBigInt();
-  }
-}
-
-export class ThemisAuction__highestBidsResult {
-  value0: BigInt;
-  value1: BigInt;
-  value2: BigInt;
-  value3: BigInt;
-
-  constructor(value0: BigInt, value1: BigInt, value2: BigInt, value3: BigInt) {
-    this.value0 = value0;
-    this.value1 = value1;
-    this.value2 = value2;
-    this.value3 = value3;
-  }
-
-  toMap(): TypedMap<string, ethereum.Value> {
-    let map = new TypedMap<string, ethereum.Value>();
-    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
-    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
-    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
-    map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
-    return map;
-  }
-
-  getHead(): BigInt {
-    return this.value0;
-  }
-
-  getTail(): BigInt {
-    return this.value1;
-  }
-
-  getTotalBids(): BigInt {
-    return this.value2;
-  }
-
-  getCapacity(): BigInt {
-    return this.value3;
   }
 }
 
@@ -571,14 +529,10 @@ export class ThemisAuction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  checkBid(
-    bidder: Bytes,
-    bidAmount: BigInt,
-    salt: Bytes
-  ): ThemisAuction__checkBidResult {
+  checkBid(bidder: Bytes, bidAmount: BigInt, salt: Bytes): boolean {
     let result = super.call(
       "checkBid",
-      "checkBid(bytes32,uint128,bytes32):(bool,bytes32,uint128,bytes32)",
+      "checkBid(bytes32,uint128,bytes32):(bool)",
       [
         ethereum.Value.fromFixedBytes(bidder),
         ethereum.Value.fromUnsignedBigInt(bidAmount),
@@ -586,22 +540,17 @@ export class ThemisAuction extends ethereum.SmartContract {
       ]
     );
 
-    return new ThemisAuction__checkBidResult(
-      result[0].toBoolean(),
-      result[1].toBytes(),
-      result[2].toBigInt(),
-      result[3].toBytes()
-    );
+    return result[0].toBoolean();
   }
 
   try_checkBid(
     bidder: Bytes,
     bidAmount: BigInt,
     salt: Bytes
-  ): ethereum.CallResult<ThemisAuction__checkBidResult> {
+  ): ethereum.CallResult<boolean> {
     let result = super.tryCall(
       "checkBid",
-      "checkBid(bytes32,uint128,bytes32):(bool,bytes32,uint128,bytes32)",
+      "checkBid(bytes32,uint128,bytes32):(bool)",
       [
         ethereum.Value.fromFixedBytes(bidder),
         ethereum.Value.fromUnsignedBigInt(bidAmount),
@@ -612,14 +561,7 @@ export class ThemisAuction extends ethereum.SmartContract {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new ThemisAuction__checkBidResult(
-        value[0].toBoolean(),
-        value[1].toBytes(),
-        value[2].toBigInt(),
-        value[3].toBytes()
-      )
-    );
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
   checkLiquidityReceipt(_receipt: BigInt): boolean {
@@ -780,7 +722,7 @@ export class ThemisAuction extends ethereum.SmartContract {
   getHighestBids(): Array<ThemisAuction__getHighestBidsResultValue0Struct> {
     let result = super.call(
       "getHighestBids",
-      "getHighestBids():((uint32,address,uint128,uint64,uint32,uint32)[])",
+      "getHighestBids():((uint32,address,uint128,uint64)[])",
       []
     );
 
@@ -794,7 +736,7 @@ export class ThemisAuction extends ethereum.SmartContract {
   > {
     let result = super.tryCall(
       "getHighestBids",
-      "getHighestBids():((uint32,address,uint128,uint64,uint32,uint32)[])",
+      "getHighestBids():((uint32,address,uint128,uint64)[])",
       []
     );
     if (result.reverted) {
@@ -806,39 +748,19 @@ export class ThemisAuction extends ethereum.SmartContract {
     );
   }
 
-  highestBids(): ThemisAuction__highestBidsResult {
-    let result = super.call(
-      "highestBids",
-      "highestBids():(uint32,uint32,uint32,uint32)",
-      []
-    );
+  highestBids(): BigInt {
+    let result = super.call("highestBids", "highestBids():(uint32)", []);
 
-    return new ThemisAuction__highestBidsResult(
-      result[0].toBigInt(),
-      result[1].toBigInt(),
-      result[2].toBigInt(),
-      result[3].toBigInt()
-    );
+    return result[0].toBigInt();
   }
 
-  try_highestBids(): ethereum.CallResult<ThemisAuction__highestBidsResult> {
-    let result = super.tryCall(
-      "highestBids",
-      "highestBids():(uint32,uint32,uint32,uint32)",
-      []
-    );
+  try_highestBids(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("highestBids", "highestBids():(uint32)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new ThemisAuction__highestBidsResult(
-        value[0].toBigInt(),
-        value[1].toBigInt(),
-        value[2].toBigInt(),
-        value[3].toBigInt()
-      )
-    );
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   isApprovedForAll(param0: Address, param1: Address): boolean {
@@ -988,6 +910,21 @@ export class ThemisAuction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
+  testRouter(): BigInt {
+    let result = super.call("testRouter", "testRouter():(uint128)", []);
+
+    return result[0].toBigInt();
+  }
+
+  try_testRouter(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("testRouter", "testRouter():(uint128)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   tokenURI(id: BigInt): string {
     let result = super.call("tokenURI", "tokenURI(uint256):(string)", [
       ethereum.Value.fromUnsignedBigInt(id)
@@ -1119,18 +1056,6 @@ export class CheckBidCall__Outputs {
 
   get value0(): boolean {
     return this._call.outputValues[0].value.toBoolean();
-  }
-
-  get value1(): Bytes {
-    return this._call.outputValues[1].value.toBytes();
-  }
-
-  get value2(): BigInt {
-    return this._call.outputValues[2].value.toBigInt();
-  }
-
-  get value3(): Bytes {
-    return this._call.outputValues[3].value.toBytes();
   }
 }
 
@@ -1466,40 +1391,6 @@ export class SetApprovalForAllCall__Outputs {
   }
 }
 
-export class SetInsertLimitsCall extends ethereum.Call {
-  get inputs(): SetInsertLimitsCall__Inputs {
-    return new SetInsertLimitsCall__Inputs(this);
-  }
-
-  get outputs(): SetInsertLimitsCall__Outputs {
-    return new SetInsertLimitsCall__Outputs(this);
-  }
-}
-
-export class SetInsertLimitsCall__Inputs {
-  _call: SetInsertLimitsCall;
-
-  constructor(call: SetInsertLimitsCall) {
-    this._call = call;
-  }
-
-  get lesserkey_(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get greaterKey_(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-}
-
-export class SetInsertLimitsCall__Outputs {
-  _call: SetInsertLimitsCall;
-
-  constructor(call: SetInsertLimitsCall) {
-    this._call = call;
-  }
-}
-
 export class SetRouterCall extends ethereum.Call {
   get inputs(): SetRouterCall__Inputs {
     return new SetRouterCall__Inputs(this);
@@ -1527,6 +1418,36 @@ export class SetRouterCall__Outputs {
 
   constructor(call: SetRouterCall) {
     this._call = call;
+  }
+}
+
+export class TestRouterCall extends ethereum.Call {
+  get inputs(): TestRouterCall__Inputs {
+    return new TestRouterCall__Inputs(this);
+  }
+
+  get outputs(): TestRouterCall__Outputs {
+    return new TestRouterCall__Outputs(this);
+  }
+}
+
+export class TestRouterCall__Inputs {
+  _call: TestRouterCall;
+
+  constructor(call: TestRouterCall) {
+    this._call = call;
+  }
+}
+
+export class TestRouterCall__Outputs {
+  _call: TestRouterCall;
+
+  constructor(call: TestRouterCall) {
+    this._call = call;
+  }
+
+  get value0(): BigInt {
+    return this._call.outputValues[0].value.toBigInt();
   }
 }
 

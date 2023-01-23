@@ -300,21 +300,29 @@ export class Bid extends Entity {
     this.set("amount", Value.fromBigInt(value));
   }
 
-  get timestamp(): BigInt {
-    let value = this.get("timestamp");
+  get createdAt(): BigInt {
+    let value = this.get("createdAt");
     return value!.toBigInt();
   }
 
-  set timestamp(value: BigInt) {
-    this.set("timestamp", Value.fromBigInt(value));
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
   }
 
-  get position(): BigInt {
+  get position(): BigInt | null {
     let value = this.get("position");
-    return value!.toBigInt();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set position(value: BigInt) {
-    this.set("position", Value.fromBigInt(value));
+  set position(value: BigInt | null) {
+    if (!value) {
+      this.unset("position");
+    } else {
+      this.set("position", Value.fromBigInt(<BigInt>value));
+    }
   }
 }
